@@ -27,11 +27,12 @@ import {
   MetaSignature,
   stringToBytes32,
 } from './helpers'
+import { moonMethod } from './config/const'
 
 /**
  * A class that can be used to interact with the ERC1056 contract on behalf of a local controller key-pair
  */
-export class EthrDidController {
+export class MoonDidController {
   private contract: Contract
   private readonly signer?: Signer
   private readonly address: string
@@ -68,6 +69,7 @@ export class EthrDidController {
     this.legacyNonce = legacyNonce
     // initialize identifier
     const { address, publicKey, network } = interpretIdentifier(identifier)
+
     const net = network || chainNameOrId
     // initialize contract connection
     if (contract) {
@@ -84,10 +86,14 @@ export class EthrDidController {
     if (networkString in ['mainnet:', '0x1:']) {
       networkString = ''
     }
-    this.did = publicKey ? `did:ethr:${networkString}${publicKey}` : `did:ethr:${networkString}${address}`
+    this.did = publicKey
+      ? `did:${moonMethod}:${networkString}${publicKey}`
+      : `did:${moonMethod}:${networkString}${address}`
   }
 
   async getOwner(address: address, blockTag?: BlockTag): Promise<string> {
+    //Method in the DIDRegistry contract
+    //Return owner of the identity. If there is no owner, it returns the address of the identity itself.
     return this.contract.identityOwner(address, { blockTag })
   }
 
@@ -109,7 +115,7 @@ export class EthrDidController {
   async changeOwner(newOwner: address, options: Overrides = {}): Promise<TransactionReceipt> {
     // console.log(`changing owner for ${oldOwner} on registry at ${registryContract.address}`)
     const overrides = {
-      gasLimit: 123456,
+      gasLimit: 300000,
       ...options,
     } as Overrides
     const contract = await this.attachContract(overrides.from ?? undefined)
@@ -129,6 +135,7 @@ export class EthrDidController {
       this.address,
       getBytes(concat([toUtf8Bytes('changeOwner'), newOwner])),
     ])
+
     return keccak256(dataToHash)
   }
 
@@ -138,7 +145,7 @@ export class EthrDidController {
     options: Overrides = {}
   ): Promise<TransactionReceipt> {
     const overrides = {
-      gasLimit: 123456,
+      gasLimit: 300000,
       ...options,
     }
 

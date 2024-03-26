@@ -2,7 +2,7 @@ import { Contract, ethers, hexlify, toUtf8Bytes } from 'ethers'
 import { Resolvable } from 'did-resolver'
 
 import { GanacheProvider } from '@ethers-ext/provider-ganache'
-import { EthrDidController } from '../controller'
+import { MoonDidController } from '../controller'
 import { deployRegistry, randomAccount, sleep } from './testUtils'
 import { stringToBytes32 } from '../helpers'
 
@@ -23,7 +23,7 @@ describe('attributes', () => {
       expect.assertions(1)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
       const { pubKey } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         'did/pub/Secp256k1/veriKey',
         pubKey,
         86401
@@ -54,9 +54,9 @@ describe('attributes', () => {
     it('add Bls12381G2Key2020 assertion key', async () => {
       expect.assertions(1)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
-      const  pubKey  = hexlify(toUtf8Bytes("public key material here")) // encodes to 0x7075626c6963206b6579206d6174657269616c2068657265 in base16
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
-        'did/pub/Bls12381G2Key2020',  // attrName must fit into 32 bytes. Anything extra will be truncated.
+      const pubKey = hexlify(toUtf8Bytes('public key material here')) // encodes to 0x7075626c6963206b6579206d6174657269616c2068657265 in base16
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
+        'did/pub/Bls12381G2Key2020', // attrName must fit into 32 bytes. Anything extra will be truncated.
         pubKey, // There's no limit on the size of the public key material
         86401
       )
@@ -75,7 +75,7 @@ describe('attributes', () => {
             id: `${did}#delegate-1`,
             type: 'Bls12381G2Key2020',
             controller: did,
-            publicKeyHex: "7075626c6963206b6579206d6174657269616c2068657265",
+            publicKeyHex: '7075626c6963206b6579206d6174657269616c2068657265',
           },
         ],
         authentication: [`${did}#controller`],
@@ -87,7 +87,7 @@ describe('attributes', () => {
       expect.assertions(1)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
       const { pubKey } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         'did/pub/Ed25519/sigAuth/base64',
         pubKey,
         86402
@@ -118,7 +118,7 @@ describe('attributes', () => {
     it('add RSAVerificationKey2018 signing key', async () => {
       expect.assertions(1)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         'did/pub/RSA/veriKey/pem',
         '-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n',
         86403
@@ -150,7 +150,7 @@ describe('attributes', () => {
       expect.assertions(1)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
       const pubKeyBase64 = 'MCowBQYDK2VuAyEAEYVXd3/7B4d0NxpSsA/tdVYdz5deYcR1U+ZkphdmEFI='
-      await new EthrDidController(did, registryContract, signer).setAttribute(
+      await new MoonDidController(did, registryContract, signer).setAttribute(
         'did/pub/X25519/enc/base64',
         ethers.hexlify(ethers.decodeBase64(pubKeyBase64)),
         86404
@@ -183,7 +183,7 @@ describe('attributes', () => {
       expect.assertions(1)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
       const imaginaryKey = '0x1234567890'
-      await new EthrDidController(did, registryContract, signer).setAttribute(
+      await new MoonDidController(did, registryContract, signer).setAttribute(
         'did/pub/ImaginaryKey2023/veriKey',
         imaginaryKey,
         86404
@@ -217,7 +217,7 @@ describe('attributes', () => {
     it('resolves document', async () => {
       expect.assertions(1)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         stringToBytes32('did/svc/HubService'),
         'https://hubs.uport.me',
         86405
@@ -251,7 +251,7 @@ describe('attributes', () => {
     it('resolves document', async () => {
       expect.assertions(2)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         stringToBytes32('did/svc/HubService'),
         JSON.stringify({ uri: 'https://hubs.uport.me', transportType: 'http' }),
         86405
@@ -279,7 +279,7 @@ describe('attributes', () => {
         ],
       })
 
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         stringToBytes32('did/svc/HubService'),
         JSON.stringify([
           { uri: 'https://hubs.uport.me', transportType: 'http' },
@@ -318,7 +318,7 @@ describe('attributes', () => {
       expect.assertions(2)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
       const { pubKey } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         'did/pub/Secp256k1/veriKey',
         pubKey,
         86401
@@ -345,7 +345,7 @@ describe('attributes', () => {
         assertionMethod: [`${did}#controller`, `${did}#delegate-1`],
       })
 
-      await new EthrDidController(identity, registryContract, signer).revokeAttribute(
+      await new MoonDidController(identity, registryContract, signer).revokeAttribute(
         'did/pub/Secp256k1/veriKey',
         pubKey
       )
@@ -371,7 +371,7 @@ describe('attributes', () => {
       expect.assertions(2)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
       const { pubKey } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         'did/pub/Ed25519/sigAuth/base64',
         pubKey,
         86402
@@ -397,7 +397,7 @@ describe('attributes', () => {
         authentication: [`${did}#controller`, `${did}#delegate-1`],
         assertionMethod: [`${did}#controller`, `${did}#delegate-1`],
       })
-      await new EthrDidController(identity, registryContract, signer).revokeAttribute(
+      await new MoonDidController(identity, registryContract, signer).revokeAttribute(
         'did/pub/Ed25519/sigAuth/base64',
         pubKey
       )
@@ -421,7 +421,7 @@ describe('attributes', () => {
     it('revokes service endpoint', async () => {
       expect.assertions(2)
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         stringToBytes32('did/svc/HubService'),
         'https://hubs.uport.me',
         86405
@@ -449,7 +449,7 @@ describe('attributes', () => {
         ],
       })
 
-      await new EthrDidController(identity, registryContract, signer).revokeAttribute(
+      await new MoonDidController(identity, registryContract, signer).revokeAttribute(
         stringToBytes32('did/svc/HubService'),
         'https://hubs.uport.me'
       )
@@ -476,7 +476,7 @@ describe('attributes', () => {
       const { address: identity, shortDID: did, signer } = await randomAccount(provider)
       const { pubKey } = await randomAccount(provider)
       const validitySeconds = 2
-      await new EthrDidController(identity, registryContract, signer).setAttribute(
+      await new MoonDidController(identity, registryContract, signer).setAttribute(
         'did/pub/Ed25519/sigAuth',
         pubKey,
         validitySeconds

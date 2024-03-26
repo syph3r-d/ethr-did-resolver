@@ -4,47 +4,62 @@ import { interpretIdentifier } from '../helpers'
 
 jest.setTimeout(30000)
 
-describe('ethrResolver (alt-chains)', () => {
+describe('moonResolver (alt-chains)', () => {
   const addr = '0xd0dbe9d3698738f899ccd8ee27ff2347a7faa4dd'
+  // const addr = '0x35252b703078f9E9E96ffbC739372fE5eF6aebAF'
   const { address } = interpretIdentifier(addr)
   const checksumAddr = address
 
-  describe('eth-networks', () => {
-    it('resolves on mainnet with versionId', async () => {
-      const resolver = new Resolver(getResolver({ infuraProjectId: '6b734e0b04454df8a6ce234023c04f26' }))
-      const result = await resolver.resolve('did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388?versionId=12090174')
-      expect(result).toEqual({
-        didDocumentMetadata: {
-          nextVersionId: '12090175',
-          nextUpdate: '2021-03-22T18:14:29Z',
-        },
-        didResolutionMetadata: {
-          contentType: 'application/did+ld+json',
-        },
-        didDocument: {
-          '@context': expect.anything(),
-          id: 'did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388',
-          verificationMethod: [
-            {
-              id: 'did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388#controller',
-              type: 'EcdsaSecp256k1RecoveryMethod2020',
-              controller: 'did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388',
-              blockchainAccountId: 'eip155:1:0x26bF14321004e770E7A8b080b7a526d8eed8b388',
-            },
-          ],
-          authentication: ['did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388#controller'],
-          assertionMethod: ['did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388#controller'],
-        },
-      })
-    })
+  describe('moon-networks', () => {
+    // it('resolves on mainnet with versionId', async () => {
+    //   const resolver = new Resolver(
+    //     getResolver({
+    //       infuraProjectId: '6b734e0b04454df8a6ce234023c04f26',
+    //     })
+    //   )
+    //   const result = await resolver.resolve('did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388?versionId=12090174')
 
-    it('resolves on goerli when configured', async () => {
-      const did = 'did:ethr:goerli:' + addr
-      const ethr = getResolver({
-        networks: [{ name: 'goerli', rpcUrl: 'https://goerli.infura.io/v3/6b734e0b04454df8a6ce234023c04f26' }],
+    //   expect(result).toEqual({
+    //     didDocumentMetadata: {
+    //       nextVersionId: '12090175',
+    //       nextUpdate: '2021-03-22T18:14:29Z',
+    //     },
+    //     didResolutionMetadata: {
+    //       contentType: 'application/did+ld+json',
+    //     },
+    //     didDocument: {
+    //       '@context': expect.anything(),
+    //       id: 'did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388',
+    //       verificationMethod: [
+    //         {
+    //           id: 'did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388#controller',
+    //           type: 'EcdsaSecp256k1RecoveryMethod2020',
+    //           controller: 'did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388',
+    //           blockchainAccountId: 'eip155:1:0x26bF14321004e770E7A8b080b7a526d8eed8b388',
+    //         },
+    //       ],
+    //       authentication: ['did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388#controller'],
+    //       assertionMethod: ['did:ethr:0x26bf14321004e770e7a8b080b7a526d8eed8b388#controller'],
+    //     },
+    //   })
+    // })
+
+    it('resolves on alpha when configured', async () => {
+      const did = 'did:moon:alpha:' + addr
+      const moon = getResolver({
+        networks: [
+          {
+            name: 'alpha',
+            chainId: 1287,
+            registry: '0x1205411db2cC925253A57299f3313075DDD48439',
+            rpcUrl: 'https://rpc.api.moonbase.moonbeam.network',
+          },
+        ],
       })
-      const resolver = new Resolver(ethr)
+      const resolver = new Resolver(moon)
       const result = await resolver.resolve(did)
+      console.log(result)
+
       expect(result).toEqual({
         didDocumentMetadata: {},
         didResolutionMetadata: { contentType: 'application/did+ld+json' },
@@ -56,61 +71,7 @@ describe('ethrResolver (alt-chains)', () => {
               id: `${did}#controller`,
               type: 'EcdsaSecp256k1RecoveryMethod2020',
               controller: did,
-              blockchainAccountId: `eip155:5:${checksumAddr}`,
-            },
-          ],
-          authentication: [`${did}#controller`],
-          assertionMethod: [`${did}#controller`],
-        },
-      })
-    })
-
-    it('resolves on linea:goerli when configured', async () => {
-      const did = 'did:ethr:linea:goerli:' + addr
-      const ethr = getResolver({
-        infuraProjectId: '6b734e0b04454df8a6ce234023c04f26',
-      })
-      const resolver = new Resolver(ethr)
-      const result = await resolver.resolve(did)
-      expect(result).toEqual({
-        didDocumentMetadata: {},
-        didResolutionMetadata: { contentType: 'application/did+ld+json' },
-        didDocument: {
-          '@context': expect.anything(),
-          id: did,
-          verificationMethod: [
-            {
-              id: `${did}#controller`,
-              type: 'EcdsaSecp256k1RecoveryMethod2020',
-              controller: did,
-              blockchainAccountId: `eip155:59140:${checksumAddr}`,
-            },
-          ],
-          authentication: [`${did}#controller`],
-          assertionMethod: [`${did}#controller`],
-        },
-      })
-    })
-
-    it('resolves on sepolia when configured', async () => {
-      const did = 'did:ethr:sepolia:' + addr
-      const ethr = getResolver({
-        infuraProjectId: '6b734e0b04454df8a6ce234023c04f26',
-      })
-      const resolver = new Resolver(ethr)
-      const result = await resolver.resolve(did)
-      expect(result).toEqual({
-        didDocumentMetadata: {},
-        didResolutionMetadata: { contentType: 'application/did+ld+json' },
-        didDocument: {
-          '@context': expect.anything(),
-          id: did,
-          verificationMethod: [
-            {
-              id: `${did}#controller`,
-              type: 'EcdsaSecp256k1RecoveryMethod2020',
-              controller: did,
-              blockchainAccountId: `eip155:11155111:${checksumAddr}`,
+              blockchainAccountId: `eip155:1287:${checksumAddr}`,
             },
           ],
           authentication: [`${did}#controller`],
@@ -121,9 +82,9 @@ describe('ethrResolver (alt-chains)', () => {
 
     // socket hangup
     it.skip('resolves on rsk when configured', async () => {
-      const did = 'did:ethr:rsk:' + addr
-      const ethr = getResolver({ networks: [{ name: 'rsk', rpcUrl: 'https://public-node.rsk.co' }] })
-      const resolver = new Resolver(ethr)
+      const did = 'did:moon:rsk:' + addr
+      const moon = getResolver({ networks: [{ name: 'rsk', rpcUrl: 'https://public-node.rsk.co' }] })
+      const resolver = new Resolver(moon)
       const result = await resolver.resolve(did)
       expect(result).toEqual({
         didDocumentMetadata: {},
@@ -147,9 +108,9 @@ describe('ethrResolver (alt-chains)', () => {
 
     // socket hangup
     it.skip('resolves on rsk:testnet when configured', async () => {
-      const did = 'did:ethr:rsk:testnet:' + addr
-      const ethr = getResolver({ networks: [{ name: 'rsk:testnet', rpcUrl: 'https://public-node.testnet.rsk.co' }] })
-      const resolver = new Resolver(ethr)
+      const did = 'did:moon:rsk:testnet:' + addr
+      const moon = getResolver({ networks: [{ name: 'rsk:testnet', rpcUrl: 'https://public-node.testnet.rsk.co' }] })
+      const resolver = new Resolver(moon)
       const result = await resolver.resolve(did)
       expect(result).toEqual({
         didDocumentMetadata: {},
@@ -172,9 +133,9 @@ describe('ethrResolver (alt-chains)', () => {
     })
 
     it.skip('resolves public key identifier on rsk when configured', async () => {
-      const did = 'did:ethr:rsk:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479'
-      const ethr = getResolver({ networks: [{ name: 'rsk', rpcUrl: 'https://did.rsk.co:4444' }] })
-      const resolver = new Resolver(ethr)
+      const did = 'did:moon:rsk:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479'
+      const moon = getResolver({ networks: [{ name: 'rsk', rpcUrl: 'https://did.rsk.co:4444' }] })
+      const resolver = new Resolver(moon)
       const doc = await resolver.resolve(did)
       return expect(doc).toEqual({
         didDocumentMetadata: {},
@@ -203,8 +164,8 @@ describe('ethrResolver (alt-chains)', () => {
     })
 
     it('resolves public keys and services on aurora when configured', async () => {
-      const did = 'did:ethr:aurora:0x036d148205e34a8591dcdcea34fb7fed760f5f1eca66d254830833f755ff359ef0'
-      const ethr = getResolver({
+      const did = 'did:moon:aurora:0x036d148205e34a8591dcdcea34fb7fed760f5f1eca66d254830833f755ff359ef0'
+      const moon = getResolver({
         networks: [
           {
             name: 'aurora',
@@ -214,7 +175,7 @@ describe('ethrResolver (alt-chains)', () => {
           },
         ],
       })
-      const resolver = new Resolver(ethr)
+      const resolver = new Resolver(moon)
       const doc = await resolver.resolve(did)
       return expect(doc).toEqual({
         didDocumentMetadata: {

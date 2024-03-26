@@ -2,7 +2,7 @@ import { Contract } from 'ethers'
 import { Resolvable } from 'did-resolver'
 
 import { GanacheProvider } from '@ethers-ext/provider-ganache'
-import { EthrDidController } from '../controller'
+import { MoonDidController } from '../controller'
 import { deployRegistry, randomAccount } from './testUtils'
 
 jest.setTimeout(30000)
@@ -22,7 +22,7 @@ describe('change identity owner', () => {
     const { shortDID: did, signer } = await randomAccount(provider)
     const { address: newOwner } = await randomAccount(provider)
     const blockHeightBeforeChange = (await provider.getBlock('latest'))!.number
-    await new EthrDidController(did, registryContract, signer).changeOwner(newOwner)
+    await new MoonDidController(did, registryContract, signer).changeOwner(newOwner)
     const result = await didResolver.resolve(did)
     expect(parseInt(result?.didDocumentMetadata.versionId ?? '')).toBeGreaterThanOrEqual(blockHeightBeforeChange + 1)
     expect(result.didDocument).toEqual({
@@ -46,7 +46,7 @@ describe('change identity owner', () => {
     const { longDID: pubDID, signer } = await randomAccount(provider)
     const { address: newOwner } = await randomAccount(provider)
 
-    await new EthrDidController(pubDID, registryContract, signer).changeOwner(newOwner)
+    await new MoonDidController(pubDID, registryContract, signer).changeOwner(newOwner)
     const { didDocument } = await didResolver.resolve(pubDID)
     expect(didDocument).toEqual({
       '@context': expect.anything(),

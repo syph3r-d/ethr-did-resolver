@@ -1,4 +1,5 @@
 import { VerificationMethod } from 'did-resolver'
+import { moonMethod } from './config/const'
 import { computeAddress, getAddress, toUtf8Bytes, toUtf8String, zeroPadBytes } from 'ethers'
 
 export const identifierMatcher = /^(.*)?(0x[0-9a-fA-F]{40}|0x[0-9a-fA-F]{66})$/
@@ -106,7 +107,7 @@ export function stringToBytes32(str: string): string {
 export function interpretIdentifier(identifier: string): { address: string; publicKey?: string; network?: string } {
   let id = identifier
   let network = undefined
-  if (id.startsWith('did:ethr')) {
+  if (id.startsWith(`did:${moonMethod}`)) {
     id = id.split('?')[0]
     const components = id.split(':')
     id = components[components.length - 1]

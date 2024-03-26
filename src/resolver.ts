@@ -29,10 +29,10 @@ import {
 import { logDecoder } from './logParser'
 
 export function getResolver(options: ConfigurationOptions): Record<string, DIDResolver> {
-  return new EthrDidResolver(options).build()
+  return new MoonDidResolver(options).build()
 }
 
-export class EthrDidResolver {
+export class MoonDidResolver {
   private contracts: ConfiguredNetworks
 
   constructor(options: ConfigurationOptions) {
@@ -348,7 +348,7 @@ export class EthrDidResolver {
       return {
         didResolutionMetadata: {
           error: Errors.invalidDid,
-          message: `Not a valid did:ethr: ${parsed.id}`,
+          message: `Not a valid did:moon: ${parsed.id}`,
         },
         didDocumentMetadata: {},
         didDocument: null,
@@ -439,6 +439,6 @@ export class EthrDidResolver {
   }
 
   build(): Record<string, DIDResolver> {
-    return { ethr: this.resolve.bind(this) }
+    return { moon: this.resolve.bind(this) }
   }
 }

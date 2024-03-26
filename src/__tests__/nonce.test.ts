@@ -1,5 +1,5 @@
-import { Contract, ContractFactory, getBytes, SigningKey } from 'ethers'
-import { EthrDidController } from '../controller'
+import { Contract, ContractFactory } from 'ethers'
+import { MoonDidController } from '../controller'
 import { default as LegacyEthereumDIDRegistry } from './EthereumDIDRegistry-Legacy/LegacyEthereumDIDRegistry.json'
 import { deployRegistry, randomAccount } from './testUtils'
 import { GanacheProvider } from '@ethers-ext/provider-ganache'
@@ -26,9 +26,9 @@ describe('nonce tracking', () => {
       const { address: nextOwner, privKey: nextOwnerKey } = await randomAccount(provider)
       const { address: finalOwner } = await randomAccount(provider)
 
-      const identifier = `did:ethr:dev:${originalOwner}`
+      const identifier = `did:moon:dev:${originalOwner}`
 
-      const ethrController = new EthrDidController(
+      const moonController = new MoonDidController(
         identifier,
         registryContract,
         await provider.getSigner(0),
@@ -39,19 +39,19 @@ describe('nonce tracking', () => {
         false
       )
 
-      const hash = await ethrController.createChangeOwnerHash(nextOwner)
+      const hash = await moonController.createChangeOwnerHash(nextOwner)
       const signature = originalOwnerKey.sign(hash)
 
-      await ethrController.changeOwnerSigned(nextOwner, {
+      await moonController.changeOwnerSigned(nextOwner, {
         sigV: signature.v,
         sigR: signature.r,
         sigS: signature.s,
       })
 
-      const hash2 = await ethrController.createChangeOwnerHash(finalOwner)
+      const hash2 = await moonController.createChangeOwnerHash(finalOwner)
       const signature2 = nextOwnerKey.sign(hash2)
 
-      await ethrController.changeOwnerSigned(finalOwner, {
+      await moonController.changeOwnerSigned(finalOwner, {
         sigV: signature2.v,
         sigR: signature2.r,
         sigS: signature2.s,
@@ -72,7 +72,7 @@ describe('nonce tracking', () => {
       const attributeValue = JSON.stringify(serviceEndpointParams)
       const attributeExpiration = 86400
 
-      const ethrController = new EthrDidController(
+      const moonController = new MoonDidController(
         identifier,
         registryContract,
         await provider.getSigner(0),
@@ -83,19 +83,19 @@ describe('nonce tracking', () => {
         false
       )
 
-      const hash = await ethrController.createChangeOwnerHash(nextOwner)
+      const hash = await moonController.createChangeOwnerHash(nextOwner)
       const signature = originalOwnerKey.sign(hash)
 
-      await ethrController.changeOwnerSigned(nextOwner, {
+      await moonController.changeOwnerSigned(nextOwner, {
         sigV: signature.v,
         sigR: signature.r,
         sigS: signature.s,
       })
 
-      const hash2 = await ethrController.createSetAttributeHash(attributeName, attributeValue, attributeExpiration)
+      const hash2 = await moonController.createSetAttributeHash(attributeName, attributeValue, attributeExpiration)
       const signature2 = nextOwnerKey.sign(hash2)
 
-      await ethrController.setAttributeSigned(attributeName, attributeValue, attributeExpiration, {
+      await moonController.setAttributeSigned(attributeName, attributeValue, attributeExpiration, {
         sigV: signature2.v,
         sigR: signature2.r,
         sigS: signature2.s,
@@ -113,12 +113,12 @@ describe('nonce tracking', () => {
       const { address: nextOwner, privKey: nextOwnerKey } = await randomAccount(provider)
       const { address: finalOwner } = await randomAccount(provider)
 
-      const identifier = `did:ethr:legacy:${originalOwner}`
+      const identifier = `did:moon:legacy:${originalOwner}`
 
-      const hash = await new EthrDidController(identifier, legacyRegistryContract).createChangeOwnerHash(nextOwner)
+      const hash = await new MoonDidController(identifier, legacyRegistryContract).createChangeOwnerHash(nextOwner)
       const signature = originalOwnerKey.sign(hash)
 
-      await new EthrDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).changeOwnerSigned(
+      await new MoonDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).changeOwnerSigned(
         nextOwner,
         {
           sigV: signature.v,
@@ -127,10 +127,10 @@ describe('nonce tracking', () => {
         }
       )
 
-      const hash2 = await new EthrDidController(identifier, legacyRegistryContract).createChangeOwnerHash(finalOwner)
+      const hash2 = await new MoonDidController(identifier, legacyRegistryContract).createChangeOwnerHash(finalOwner)
       const signature2 = nextOwnerKey.sign(hash2)
 
-      await new EthrDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).changeOwnerSigned(
+      await new MoonDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).changeOwnerSigned(
         finalOwner,
         {
           sigV: signature2.v,
@@ -156,12 +156,12 @@ describe('nonce tracking', () => {
       const attributeValue = JSON.stringify(serviceEndpointParams)
       const attributeExpiration = 86400
 
-      const identifier = `did:ethr:legacy:${originalOwner}`
+      const identifier = `did:moon:legacy:${originalOwner}`
 
-      const hash = await new EthrDidController(identifier, legacyRegistryContract).createChangeOwnerHash(nextOwner)
+      const hash = await new MoonDidController(identifier, legacyRegistryContract).createChangeOwnerHash(nextOwner)
       const signature = originalOwnerKey.sign(hash)
 
-      await new EthrDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).changeOwnerSigned(
+      await new MoonDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).changeOwnerSigned(
         nextOwner,
         {
           sigV: signature.v,
@@ -170,14 +170,14 @@ describe('nonce tracking', () => {
         }
       )
 
-      const hash2 = await new EthrDidController(identifier, legacyRegistryContract).createSetAttributeHash(
+      const hash2 = await new MoonDidController(identifier, legacyRegistryContract).createSetAttributeHash(
         attributeName,
         attributeValue,
         attributeExpiration
       )
       const signature2 = nextOwnerKey.sign(hash2)
 
-      await new EthrDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).setAttributeSigned(
+      await new MoonDidController(identifier, legacyRegistryContract, await provider.getSigner(0)).setAttributeSigned(
         attributeName,
         attributeValue,
         attributeExpiration,

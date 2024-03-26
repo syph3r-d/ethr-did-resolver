@@ -1,7 +1,7 @@
 import { Contract, ContractFactory, JsonRpcProvider, Provider } from 'ethers'
 import { DEFAULT_REGISTRY_ADDRESS } from './helpers'
 import { deployments, EthrDidRegistryDeployment } from './config/deployments'
-import { default as EthereumDIDRegistry } from './config/EthereumDIDRegistry.json'
+import { default as MoonbeamDIDRegistry } from './config/MoonbeamDIDRegistry.json'
 
 const infuraNames: Record<string, string> = {
   polygon: 'matic',
@@ -10,7 +10,7 @@ const infuraNames: Record<string, string> = {
   'linea:goerli': 'linea-goerli',
 }
 
-const knownInfuraNames = ['mainnet', 'goerli', 'aurora', 'linea:goerli', 'sepolia']
+const knownInfuraNames = ['mainnet', 'goerli', 'aurora', 'linea:goerli', 'sepolia', 'alpha']
 
 /**
  * A configuration entry for an ethereum network
@@ -66,13 +66,14 @@ export function getContractForNetwork(conf: ProviderConfiguration): Contract {
   if (!provider) {
     if (conf.rpcUrl) {
       const chainIdRaw = conf.chainId ? conf.chainId : deployments.find((d) => d.name === conf.name)?.chainId
+
       const chainId = chainIdRaw ? BigInt(chainIdRaw) : chainIdRaw
       provider = new JsonRpcProvider(conf.rpcUrl, chainId || 'any')
     } else {
       throw new Error(`invalid_config: No web3 provider could be determined for network ${conf.name || conf.chainId}`)
     }
   }
-  const contract = ContractFactory.fromSolidity(EthereumDIDRegistry)
+  const contract = ContractFactory.fromSolidity(MoonbeamDIDRegistry)
     .attach(conf.registry || DEFAULT_REGISTRY_ADDRESS)
     .connect(provider)
   return contract as Contract

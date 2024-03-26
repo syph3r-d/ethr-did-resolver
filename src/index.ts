@@ -1,5 +1,5 @@
 import { getResolver } from './resolver'
-import { EthrDidController } from './controller'
+import { MoonDidController } from './controller'
 import {
   bytes32toString,
   DEFAULT_REGISTRY_ADDRESS,
@@ -13,14 +13,14 @@ import {
   MetaSignature,
 } from './helpers'
 
-import { default as EthereumDIDRegistry } from './config/EthereumDIDRegistry.json'
+import { default as MoonbeamDIDRegistry } from './config/MoonbeamDIDRegistry.json'
 
 export {
   DEFAULT_REGISTRY_ADDRESS as REGISTRY,
   getResolver,
   bytes32toString,
   stringToBytes32,
-  EthrDidController,
+  MoonDidController,
   /**@deprecated */
   legacyAlgoMap as delegateTypes,
   /**@deprecated */
@@ -29,7 +29,7 @@ export {
   identifierMatcher,
   interpretIdentifier,
   Errors,
-  EthereumDIDRegistry,
+  MoonbeamDIDRegistry,
   MetaSignature,
 }
 
